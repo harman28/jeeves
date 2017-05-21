@@ -21,3 +21,7 @@ Expects the following vars to be set
  - - Error handling for Twilio
  - - Auth errors on CSE
  - Validate request source using [this](https://www.twilio.com/docs/api/security)
+ - Dynamic query/summary logic based on SMS body
+ - - "wiki {term}" should give just the wikipedia content
+ - - "wiki disambig {term}" should help figure out the term
+ - - "okay google {term}" should give intelligent responses
