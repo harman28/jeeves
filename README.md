@@ -25,3 +25,5 @@ Expects the following vars to be set
  - - "wiki {term}" should give just the wikipedia content
  - - "wiki disambig {term}" should help figure out the term
  - - "okay google {term}" should give intelligent responses
+ - SMSes can be just one thing Jeeves does. Make me a full time valet. Branch: `jeeves_is_a_valet_not_a_mailmain`
+ - Add tests
