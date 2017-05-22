@@ -16,6 +16,10 @@ Twilio.configure do |config|
   config.auth_token  = ENV["TWILIO_#{@env}_TOKEN"]
 end
 
+get '/*' do
+  "Jeeves is here, sir, and he's waiting for you."
+end
+
 post '/twilio' do
   query = get_query params
   result = get_result query
