@@ -17,7 +17,8 @@ Twilio.configure do |config|
 end
 
 get '/*' do
-  "Jeeves is here, sir, and he's waiting for you."
+  "Jeeves is here, sir, and he's waiting for you.\n\n"\
+  "More info: https://github.com/harman28/jeeves"
 end
 
 post '/twilio' do
