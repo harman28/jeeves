@@ -22,8 +22,10 @@ Expects the following vars to be set
  - - Auth errors on CSE
  - Validate request source using [this](https://www.twilio.com/docs/api/security)
  - Dynamic query/summary logic based on SMS body
- - - "wiki {term}" should give just the wikipedia content
+ - - ~~"wiki {term}" should give just the wikipedia content~~
  - - "wiki disambig {term}" should help figure out the term
+ - - ~~"google {term}" should return search result~~
  - - "okay google {term}" should give intelligent responses
+ - - Save everything else, somehow
  - SMSes can be just one thing Jeeves does. Make me a full time valet. Branch: `jeeves_is_a_valet_not_a_mailmain`
  - Add tests
