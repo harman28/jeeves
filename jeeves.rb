@@ -23,10 +23,21 @@ get '/*' do
 end
 
 post '/twilio' do
-  query = get_query params
-  response = get_response query
-  content_type 'text/xml'
+  begin
+    query = get_query params
+    response = get_response query
+    content_type 'text/xml'
+  rescue => e
+    logger.fatal e.message
+    logger.fatal e.backtrace
+    msg = "You has found bug! The app crashed. Please tell me this happened."
+    response = build_twiml_response msg
+  end
   response
+end
+
+error do
+  "Something quite terrible happened. Deets: " + ENV['sinatra.error'].message
 end
 
 def get_query params

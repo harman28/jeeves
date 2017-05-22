@@ -18,7 +18,7 @@ Expects the following vars to be set
 
 ### TODO
  - Handle errors everywhere
- - - Error handling for Twilio
+ - - ~~Error handling for Twilio~~
  - - Auth errors on CSE
  - Validate request source using [this](https://www.twilio.com/docs/api/security)
  - Dynamic query/summary logic based on SMS body
