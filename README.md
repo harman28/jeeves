@@ -26,6 +26,8 @@ Expects the following vars to be set
  - - "wiki disambig {term}" should help figure out the term
  - - ~~"google {term}" should return search result~~
  - - "okay google {term}" should give intelligent responses
- - - Save everything else, somehow
+ - - ~Save everything else, somehow~ Pushing for now, might need to change
  - SMSes can be just one thing Jeeves does. Make me a full time valet. Branch: `jeeves_is_a_valet_not_a_mailmain`
- - Add tests
+ - ~Figure out pushable texts, like OTPs~ Contains "OTP" or "password"
+ - OTPs should be ephemerals, not actual push objects. Switch.
+ - **Add tests**

@@ -16,3 +16,6 @@ gem 'logging'
 
 # RESTful Wiki
 gem 'wikipedia-client'
+
+# Pushbullet client
+gem 'washbullet'

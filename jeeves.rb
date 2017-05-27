@@ -3,6 +3,7 @@ require 'logging'
 require 'sinatra'
 require 'httparty'
 require 'wikipedia'
+require 'washbullet'
 require 'twilio-ruby'
 
 logger = Logging.logger(STDOUT)
@@ -23,16 +24,16 @@ get '/*' do
 end
 
 post '/twilio' do
-  begin
+  # begin
     query = get_query params
     response = get_response query
     content_type 'text/xml'
-  rescue => e
-    logger.fatal e.message
-    logger.fatal e.backtrace
-    msg = "You has found bug! The app crashed. Please tell me this happened."
-    response = build_twiml_response msg
-  end
+  # rescue => e
+  #   logger.fatal e.message
+  #   logger.fatal e.backtrace
+  #   msg = "You has found bug! The app crashed. Please tell me this happened."
+  #   response = build_twiml_response msg
+  # end
   response
 end
 
@@ -46,24 +47,42 @@ def get_query params
 end
 
 def get_response body
-  case body.split(' ').first.downcase
-  when 'wiki'
+  cmd = body.split(' ').first.downcase
+  if cmd == 'wiki'
     return get_wiki_response body
-  when 'google'
+  elsif cmd == 'google'
     return get_google_response body
+  elsif body.include? 'Twilio'
+    return get_empty_response
+  elsif pushable? body
+    push_it body
+    return get_empty_response
   else
     return get_save_response body
   end
 end
 
+def push_it body
+  bullet = Washbullet::Client.new(ENV["PUSHBULLET_TOKEN"])
+  bullet.push_note(
+    receiver:   :device, # :email, :channel, :client
+    identifier: ENV['PUSHBULLET_CHROME_ID'],
+    params: {
+      title: 'SMS',
+      body:  body
+    }
+  )
+end
+
 def get_wiki_response query
   term = query[5..-1]
-  page_number = /(?<page>(?<=page:)\d+)/.match(term)['page'].to_i || 1
+  page_number = /(?<page>(?<=page:)\d+)/.match(term)['page'].to_i rescue 1
   term = term.gsub(/page:\d+/, '')
   build_wiki_response Wikipedia.find(term), page_number
 end
 
 def get_google_response query
+  query = query[7..-1]
   logger.info "Query: #{query}"
   response = HTTParty.get(
     "https://www.googleapis.com/customsearch/v1",
@@ -77,11 +96,20 @@ def get_google_response query
   build_google_response JSON.parse(response.body)
 end
 
+def pushable? body
+  body.include? "OTP" or body.downcase.include? "password"
+end
+
 def get_save_response query
   body = "Jeeves: I don't know what to do with this. Try 'google {phrase}' or "\
   "'wiki {phrase}'? For everything else, eventually, I'll learn how to "\
   "just save it, but for now I'm just going to throw it away."
+
   build_twiml_response body
+end
+
+def get_empty_response
+  build_twiml_response
 end
 
 def build_wiki_response page, page_number
@@ -100,10 +128,10 @@ def build_google_response result
   build_twiml_response string_response
 end
 
-def build_twiml_response body
+def build_twiml_response body = nil
   logger.info "Body: #{body}"
   twiml = Twilio::TwiML::Response.new do |r|
-    r.Message body
+    r.Message body unless body.nil?
   end
   twiml.text
 end
