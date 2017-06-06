@@ -24,16 +24,16 @@ get '/*' do
 end
 
 post '/twilio' do
-  # begin
+  begin
     query = get_query params
     response = get_response query
     content_type 'text/xml'
-  # rescue => e
-  #   logger.fatal e.message
-  #   logger.fatal e.backtrace
-  #   msg = "You has found bug! The app crashed. Please tell me this happened."
-  #   response = build_twiml_response msg
-  # end
+  rescue => e
+    logger.fatal e.message
+    logger.fatal e.backtrace
+    msg = "You has found bug! The app crashed. Please tell me this happened."
+    response = build_twiml_response msg
+  end
   response
 end
 
@@ -43,6 +43,7 @@ end
 
 def get_query params
   logger.info "Params: #{params.to_s}"
+  @from = params['From']
   params['Body']
 end
 
@@ -97,7 +98,9 @@ def get_google_response query
 end
 
 def pushable? body
-  body.include? "OTP" or body.downcase.include? "password"
+  is_otp = (body.include? "OTP" or body.downcase.include? "password")
+  is_explicit_push = body.include? "push"
+  is_otp or is_explicit_push
 end
 
 def get_save_response query
@@ -130,8 +133,15 @@ end
 
 def build_twiml_response body = nil
   logger.info "Body: #{body}"
+  # body = nil if unrecognised_sender?
   twiml = Twilio::TwiML::Response.new do |r|
     r.Message body unless body.nil?
   end
   twiml.text
+end
+
+def unrecognised_sender?
+  p @from
+  p ENV['RECOGNISED_PHONE_NUMBER']
+  @from != ENV['RECOGNISED_PHONE_NUMBER']
 end
