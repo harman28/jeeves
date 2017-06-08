@@ -37,6 +37,10 @@ post '/twilio' do
   response
 end
 
+post '/ola' do
+  logger.info "Ola sent us this: #{params}"
+end
+
 error do
   "Something quite terrible happened. Deets: " + ENV['sinatra.error'].message
 end
