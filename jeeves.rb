@@ -18,6 +18,20 @@ Twilio.configure do |config|
   config.auth_token  = ENV["TWILIO_#{@env}_TOKEN"]
 end
 
+helpers do
+  def protected! route
+    return if authorized? route
+    headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+    halt 401, "Not authorized\n"
+  end
+
+  def authorized? route
+    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+    valid_credentials = @auth.credentials == [route, ENV["#{route.upcase}_PASSWORD"]]
+    @auth.provided? and @auth.basic? and @auth.credentials and valid_credentials
+  end
+end
+
 get '/*' do
   "Jeeves is here, sir, and he's waiting for you.\n\n"\
   "More info: https://github.com/harman28/jeeves"
@@ -39,6 +53,11 @@ end
 
 post '/ola' do
   logger.info "Ola sent us this: #{params}"
+end
+
+post '/trace' do
+  protected! 'trace'
+  logger.info params.to_s
 end
 
 error do
