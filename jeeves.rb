@@ -55,6 +55,13 @@ post '/ola' do
   logger.info "Ola sent us this: #{params}"
 end
 
+post '/push' do
+  protected! 'push'
+  logger.info "Pushing this: #{params}"
+  title = params['title'] || 'Jeeves'
+  push_it params['body'], title
+end
+
 post '/trace' do
   protected! 'trace'
   logger.info params.to_s
@@ -86,13 +93,13 @@ def get_response body
   end
 end
 
-def push_it body
+def push_it body, title = 'Jeeves'
   bullet = Washbullet::Client.new(ENV["PUSHBULLET_TOKEN"])
   bullet.push_note(
     receiver:   :device, # :email, :channel, :client
     identifier: ENV['PUSHBULLET_CHROME_ID'],
     params: {
-      title: 'SMS',
+      title: title,
       body:  body
     }
   )
