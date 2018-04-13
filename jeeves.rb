@@ -59,7 +59,7 @@ post '/push' do
   protected! 'push'
   logger.info "Pushing this: #{params}"
   title = params['title'] || 'Jeeves'
-  push_it params['body'], title
+  push_it params['body'], title, params['email']
 end
 
 post '/trace' do
@@ -93,11 +93,18 @@ def get_response body
   end
 end
 
-def push_it body, title = 'Jeeves'
+def push_it body, title = 'Jeeves', email = nil
   bullet = Washbullet::Client.new(ENV["PUSHBULLET_TOKEN"])
+  if email.nil?
+    receiver = :device
+    identifier = ENV['PUSHBULLET_CHROME_ID']
+  else
+    receiver = :email
+    identifier = email
+  end
   bullet.push_note(
-    receiver:   :device, # :email, :channel, :client
-    identifier: ENV['PUSHBULLET_CHROME_ID'],
+    receiver: receiver,
+    identifier: identifier,
     params: {
       title: title,
       body:  body
