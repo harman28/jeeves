@@ -5,6 +5,9 @@ require 'httparty'
 require 'wikipedia'
 require 'washbullet'
 require 'twilio-ruby'
+require 'rdiscount'
+
+set :markdown, :layout_engine => :erb
 
 logger = Logging.logger(STDOUT)
 logger.level = :info
@@ -35,6 +38,10 @@ end
 get '/*' do
   "Jeeves is here, sir, and he's waiting for you.\n\n"\
   "More info: https://github.com/harman28/jeeves"
+end
+
+get '/md/*' do
+  markdown File.read('README.md')
 end
 
 post '/twilio' do
