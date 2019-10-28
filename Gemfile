@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "2.3.0"
+ruby "2.6.0"
 
 # Frankie Framework
 gem 'sinatra', '~> 2.0.1'
@@ -19,3 +19,6 @@ gem 'wikipedia-client'
 
 # Pushbullet client
 gem 'washbullet'
+
+# Markdown something
+gem 'rdiscount'

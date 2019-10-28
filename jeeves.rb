@@ -5,6 +5,9 @@ require 'httparty'
 require 'wikipedia'
 require 'washbullet'
 require 'twilio-ruby'
+require 'rdiscount'
+
+set :markdown, :layout_engine => :erb
 
 logger = Logging.logger(STDOUT)
 logger.level = :info
@@ -30,6 +33,10 @@ helpers do
     valid_credentials = @auth.credentials == [route, ENV["#{route.upcase}_PASSWORD"]]
     @auth.provided? and @auth.basic? and @auth.credentials and valid_credentials
   end
+end
+
+get '/md/*' do
+  markdown File.read('README.md')
 end
 
 get '/*' do
