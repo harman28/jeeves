@@ -3,7 +3,7 @@ source "https://rubygems.org"
 ruby "2.6.0"
 
 # Frankie Framework
-gem 'sinatra', '~> 2.0.1'
+gem 'sinatra', '~> 2.2.3'
 
 # HTTP calls, made easy
 gem 'httparty'
